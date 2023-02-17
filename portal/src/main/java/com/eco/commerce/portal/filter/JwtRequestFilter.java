@@ -81,7 +81,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                 // if token is valid configure Spring Security to manually set authentication
                 if (jwtUtil.validateToken(jwtToken, userDetails)) {
-                    MemberVO memberVO = memberService.getMemberByAccount(userDetails.getUsername());
+                    MemberVO memberVO = memberService.getMemberVOByAccount(userDetails.getUsername());
                     MemberDto memberDto = new MemberDto();
                     BeanUtils.copyProperties(memberVO, memberDto);
                     WebThreadLocal.setMember(memberDto);

@@ -1,4 +1,4 @@
-package com.pet.commerce.backstage;
+package com.eco.commerce.backstage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

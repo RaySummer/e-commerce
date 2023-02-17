@@ -1,10 +1,10 @@
-package com.eco.commerce.portal;
+package com.eco.commerce.backstage;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PortalApplicationTests {
+class BackstageApplicationTests {
 
     @Test
     void contextLoads() {

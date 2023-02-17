@@ -6,7 +6,6 @@ import com.eco.commerce.portal.module.member.dto.ro.JwtRequestRO;
 import com.eco.commerce.portal.module.member.dto.vo.JwtResponseVO;
 import com.eco.commerce.portal.module.member.service.JwtUserDetailsService;
 import com.eco.commerce.portal.utils.JwtUtil;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +45,6 @@ public class AuthenticateController {
     private JwtUserDetailsService jwtUserDetailsService;
 
 
-    @ApiOperation("jwt authenticate")
     @PostMapping("/authenticate")
     public Response authenticateJWT(@RequestBody JwtRequestRO jwtRequestRO) {
         String userName = jwtRequestRO.getUsername();
@@ -98,7 +96,6 @@ public class AuthenticateController {
         return false;
     }
 
-    @ApiOperation("jwt refresh token")
     @GetMapping("/refreshToken")
     public ResponseEntity<?> refreshToken(HttpServletRequest request) throws Exception {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();

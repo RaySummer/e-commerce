@@ -30,22 +30,31 @@ public class Member extends BaseEntity {
 
     @Column
     private String nickName;
+
     @Column
     private boolean gender;
+
     @Column
     private String mobileNumber;
+
     @Column
     private String email;
+
     @Column
     private String account;
+
     @Column
     private String avatar;
+
     @Column
     private String password;
+
     @Column
     private String backImage;
+
     @Column
     private String birthday;
+
     @Column
     private String address;
 

@@ -1,6 +1,8 @@
 package com.eco.commerce.portal.module.member.service;
 
+import com.eco.commerce.core.module.member.model.Member;
 import com.eco.commerce.core.module.member.service.MemberCoreService;
+import com.eco.commerce.portal.module.member.dto.ro.MemberRegisterRO;
 import com.eco.commerce.portal.module.member.dto.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Slf4j
-@Service
+@Service()
 public class MemberService {
 
     @Autowired
@@ -23,8 +25,21 @@ public class MemberService {
         return false;
     }
 
-    public MemberVO getMemberByAccount(String account) {
+    public MemberVO getMemberVOByAccount(String account) {
         return MemberVO.of(memberCoreService.findMemberByAccount(account));
+    }
+
+    public Member getMemberByAccount(String account) {
+        return memberCoreService.findMemberByAccount(account);
+    }
+
+    public MemberVO register(MemberRegisterRO ro) {
+        Member member = new Member();
+        member.setAccount(ro.getUsername());
+        member.setPassword(ro.getPassword());
+        member.setNickName("未命名");
+        memberCoreService.create(member);
+        return MemberVO.of(member);
     }
 
 }

@@ -2,6 +2,7 @@ package com.eco.commerce.core.module.user.repository;
 
 import com.eco.commerce.core.module.base.repository.BaseRepository;
 import com.eco.commerce.core.module.user.model.SysUser;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Ray

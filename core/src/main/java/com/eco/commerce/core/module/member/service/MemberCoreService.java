@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class MemberCoreService extends BaseCrudServiceImpl<MemberRepository, Member, Long> {
 
     public Member findMemberByAccount(String account) {
-
-        return null;
+        return baseRepository.findByAccount(account);
     }
 }

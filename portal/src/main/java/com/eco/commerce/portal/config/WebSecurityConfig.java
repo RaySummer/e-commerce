@@ -46,7 +46,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
-                .antMatchers("/swagger/").permitAll()
+                .antMatchers("/member/register", "/member/quickly-register").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers(
+                        "/about", "/login/**", "/login", "/error",                                 //排除不需spring security验证的页面
+                        "/js/**", "/css/**", "/jQuery/**", "/images/**", "/icon/**", "/file/**").permitAll()    //解决静态资源被拦截的问题(新，写在这里)
                 .anyRequest().authenticated() // 其他请求拦截
                 .and()
                 .exceptionHandling()
@@ -69,21 +73,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     // Configure paths and requests that should be ignored by Spring Security ================================
-
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring()
-                .antMatchers(HttpMethod.OPTIONS, "/**")
-
-                // allow anonymous resource requests
-                .antMatchers(
-                        "/",
-                        "/*.html",
-                        "/favicon.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js"
-                );
-    }
 
 }
