@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
@@ -59,10 +60,11 @@ public class AuthenticateController {
             UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(userName);
             try {
                 if (!isValidToken(jwtToken, userDetails)) {
-                    throw new CustomizeException("INVALID_CREDENTIALS");
+                    return Response.ofError("INVALID_CREDENTIALS");
                 }
             } catch (Exception exception) {
-                throw new CustomizeException("INVALID_CREDENTIALS");
+                log.error(exception.getMessage());
+                return Response.ofError(exception.getMessage());
             }
         }
 
@@ -70,7 +72,7 @@ public class AuthenticateController {
 
         final String refreshToken = jwtUtil.doGenerateRefreshToken(new HashMap<>(), userName);
 
-        return Response.of(new JwtResponseVO(token, refreshToken));
+        return Response.of(new JwtResponseVO(token, refreshToken, new Date()));
     }
 
     private Authentication authenticate(String username, String password) {
@@ -84,7 +86,7 @@ public class AuthenticateController {
             throw new CustomizeException("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
             log.warn("INVALID_CREDENTIALS");
-            throw new CustomizeException("INVALID_CREDENTIALS", e);
+            throw new CustomizeException(e.getMessage());
         }
         return auth;
     }
@@ -104,7 +106,7 @@ public class AuthenticateController {
 
         String refreshToken = jwtUtil.doGenerateRefreshToken(new HashMap<>(), name);
 
-        return ResponseEntity.ok(new JwtResponseVO(token, refreshToken));
+        return ResponseEntity.ok(new JwtResponseVO(token, refreshToken, new Date()));
     }
 
 

@@ -1,4 +1,4 @@
-package com.eco.commerce.portal.filter;
+package com.eco.commerce.portal.filter.jwt;
 
 import com.eco.commerce.core.module.member.dto.MemberDto;
 import com.eco.commerce.core.utils.WebThreadLocal;
@@ -8,12 +8,15 @@ import com.eco.commerce.portal.module.member.service.MemberService;
 import com.eco.commerce.portal.utils.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.Date;
@@ -25,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Ray
  * @since 2023/2/16
  */
+@Slf4j
+@Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -33,6 +38,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Lazy
     @Autowired
     private MemberService memberService;
 

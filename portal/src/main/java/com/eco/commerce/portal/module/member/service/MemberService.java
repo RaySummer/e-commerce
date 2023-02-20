@@ -6,6 +6,7 @@ import com.eco.commerce.portal.module.member.dto.ro.MemberRegisterRO;
 import com.eco.commerce.portal.module.member.dto.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service()
 public class MemberService {
+
+    @Autowired
+    private PasswordEncoder bcryptEncoder;
 
     @Autowired
     private MemberCoreService memberCoreService;
@@ -36,7 +40,7 @@ public class MemberService {
     public MemberVO register(MemberRegisterRO ro) {
         Member member = new Member();
         member.setAccount(ro.getUsername());
-        member.setPassword(ro.getPassword());
+        member.setPassword(bcryptEncoder.encode(ro.getPassword()));
         member.setNickName("未命名");
         memberCoreService.create(member);
         return MemberVO.of(member);

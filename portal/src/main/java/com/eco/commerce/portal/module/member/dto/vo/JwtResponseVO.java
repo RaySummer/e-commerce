@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Ray
@@ -20,4 +21,5 @@ public class JwtResponseVO implements Serializable {
 
     private String token;
     private String refreshToken;
+    private Date requestDate;
 }

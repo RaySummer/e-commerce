@@ -26,6 +26,7 @@ import java.util.function.Function;
 public class JwtUtil implements Serializable {
     private static final long serialVersionUID = 183413845384035416L;
 
+
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.jwtExpirationInS}")
