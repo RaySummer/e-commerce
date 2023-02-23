@@ -16,7 +16,7 @@ import java.util.Scanner;
  */
 public class TestOpenAI {
 
-    static final String apiKey = "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";
+    static final String apiKey = "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";
 
     static final String organizationId = "org-B2fgWNzZ4RdnzOv0Sc45eF0g";
 
@@ -50,7 +50,7 @@ public class TestOpenAI {
                     .prompt(sb.toString())
                     .temperature(0.9)
                     .echo(true)
-                    .maxTokens(80)
+                    .maxTokens(100)
                     .topP(1.0)
                     .frequencyPenalty(0.0)
                     .presencePenalty(0.6)
@@ -84,13 +84,13 @@ public class TestOpenAI {
 //        CompletionResult completion = service.createCompletion(completionRequest);
 //        completion.getChoices().forEach(System.out::println);
 //
-        System.out.println("\nCreating Image...");
-        CreateImageRequest request = CreateImageRequest.builder()
-                .prompt("二次元：喜多川海梦图片")
-                .build();
-
-        System.out.println("\nImage is located at:");
-        System.out.println(service.createImage(request).getData().get(0).getUrl());
+//        System.out.println("\nCreating Image...");
+//        CreateImageRequest request = CreateImageRequest.builder()
+//                .prompt("二次元：喜多川海梦图片")
+//                .build();
+//
+//        System.out.println("\nImage is located at:");
+//        System.out.println(service.createImage(request).getData().get(0).getUrl());
 
     }
 }
