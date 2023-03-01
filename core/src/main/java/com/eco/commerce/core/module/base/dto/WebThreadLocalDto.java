@@ -1,5 +1,6 @@
 package com.eco.commerce.core.module.base.dto;
 
+import com.eco.commerce.core.module.member.dto.MemberDto;
 import com.eco.commerce.core.module.user.dto.SysUserDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,4 +20,6 @@ public class WebThreadLocalDto implements Serializable {
     private SysUserDto user;
     private String hostname;
     private Date time;
+    private String browserFingerprint;
+    private MemberDto memberDto;
 }

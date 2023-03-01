@@ -34,4 +34,6 @@ public class Configuration extends BaseEntity {
     private String value;
     @Column
     private String description;
+    @Column
+    private String platform;
 }

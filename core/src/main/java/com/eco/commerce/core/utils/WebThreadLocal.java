@@ -22,6 +22,8 @@ public class WebThreadLocal {
 
     private static final ThreadLocal<Date> timeStampThreadLocal = new ThreadLocal<>();
 
+    private static final ThreadLocal<String> browserFingerprintThreadLocal = new ThreadLocal<>();
+
     public static SysUserDto getUser() {
         return userThreadLocal.get();
     }
@@ -44,6 +46,14 @@ public class WebThreadLocal {
 
     public static void setTime(Date time) {
         timeStampThreadLocal.set(time);
+    }
+
+    public static String getBrowserFingerprint() {
+        return browserFingerprintThreadLocal.get();
+    }
+
+    public static void setBrowserFingerprint(String browserFingerprint) {
+        browserFingerprintThreadLocal.set(browserFingerprint);
     }
 
     /**
@@ -79,6 +89,7 @@ public class WebThreadLocal {
         userThreadLocal.remove();
         timeStampThreadLocal.remove();
         memberThreadLocal.remove();
+        browserFingerprintThreadLocal.remove();
     }
 
     /**
@@ -88,6 +99,7 @@ public class WebThreadLocal {
         setUser(null);
         setTime(DateUtil.now());
         setMember(null);
+        setBrowserFingerprint(null);
     }
 
     /**
@@ -96,6 +108,8 @@ public class WebThreadLocal {
     public static void init(WebThreadLocalDto data) {
         setUser(data.getUser());
         setTime(data.getTime());
+        setBrowserFingerprint(data.getBrowserFingerprint());
+        setMember(data.getMemberDto());
     }
 
     /**
@@ -105,6 +119,8 @@ public class WebThreadLocal {
         WebThreadLocalDto dto = new WebThreadLocalDto();
         dto.setUser(WebThreadLocal.getUser());
         dto.setTime(WebThreadLocal.getTime());
+        dto.setMemberDto(WebThreadLocal.getMember());
+        dto.setBrowserFingerprint(WebThreadLocal.getBrowserFingerprint());
         return dto;
     }
 }

@@ -17,12 +17,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.Date;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.eco.commerce.core.constants.Constants.COOKIE_NAME_BROWSER_FINGERPRINT;
+import static com.eco.commerce.core.constants.Constants.HEADER_TOKEN_NAME;
 
 /**
  * @author Ray
@@ -46,7 +50,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) {
 
         try {
-            final String requestTokenHeader = request.getHeader("Authorization");
+            // OPTIONS 的请求都通过
+            if (request.getMethod().equalsIgnoreCase(RequestMethod.OPTIONS.name())) {
+                chain.doFilter(request, response);
+            }
+
+            // 设置浏览器指纹
+            String browserFingerprint = request.getHeader(COOKIE_NAME_BROWSER_FINGERPRINT);
+            if (browserFingerprint != null) {
+                WebThreadLocal.setBrowserFingerprint(browserFingerprint);
+            }
+
+            final String requestTokenHeader = request.getHeader(HEADER_TOKEN_NAME);
             WebThreadLocal.init();
             String username = null;
             String jwtToken = null;

@@ -10,7 +10,8 @@ CREATE TABLE "public"."configuration"
     "deleted_by"   varchar(100) COLLATE "pg_catalog"."default",
     "key"          varchar(255)                                NOT NULL,
     "value"        varchar(255),
-    "description"  varchar(255)
+    "description"  varchar(255),
+    "platform"     varchar(255)
 );
 
 CREATE
