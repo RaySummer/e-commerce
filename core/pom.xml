@@ -180,15 +180,15 @@
 
     </dependencies>
 
-    <reporting>
-        <!--所有子模块都要执行的报告-->
+   <!-- <reporting>
+        &lt;!&ndash;所有子模块都要执行的报告&ndash;&gt;
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
         </plugins>
-    </reporting>
+    </reporting>-->
 
     <build>
         <plugins>
@@ -211,10 +211,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+         <!--   <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>com.mysema.maven</groupId>
                 <artifactId>apt-maven-plugin</artifactId>
