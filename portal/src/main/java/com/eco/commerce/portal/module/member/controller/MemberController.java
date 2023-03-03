@@ -1,6 +1,7 @@
 package com.eco.commerce.portal.module.member.controller;
 
 import com.eco.commerce.core.utils.Response;
+import com.eco.commerce.portal.module.member.dto.ro.MemberRO;
 import com.eco.commerce.portal.module.member.dto.ro.MemberRegisterRO;
 import com.eco.commerce.portal.module.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,8 @@ public class MemberController {
         return Response.of(memberService.register(ro));
     }
 
-    @GetMapping("/test")
-    public Response test() {
-        return Response.of();
+    @PostMapping("/modify")
+    public Response modify(@RequestBody MemberRO ro) {
+        return Response.of(memberService.modify(ro));
     }
 }

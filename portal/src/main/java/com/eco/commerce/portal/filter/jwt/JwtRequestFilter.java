@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.Date;
+import java.util.UUID;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,6 +106,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     MemberVO memberVO = memberService.getMemberVOByAccount(userDetails.getUsername());
                     MemberDto memberDto = new MemberDto();
                     BeanUtils.copyProperties(memberVO, memberDto);
+                    memberDto.setUid(UUID.fromString(memberVO.getUid()));
                     WebThreadLocal.setMember(memberDto);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());

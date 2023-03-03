@@ -2,12 +2,15 @@ package com.eco.commerce.portal.module.member.service;
 
 import com.eco.commerce.core.module.member.model.Member;
 import com.eco.commerce.core.module.member.service.MemberCoreService;
+import com.eco.commerce.portal.module.member.dto.ro.MemberRO;
 import com.eco.commerce.portal.module.member.dto.ro.MemberRegisterRO;
 import com.eco.commerce.portal.module.member.dto.vo.MemberVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Ray
@@ -37,6 +40,7 @@ public class MemberService {
         return memberCoreService.findMemberByAccount(account);
     }
 
+    @Transactional
     public MemberVO register(MemberRegisterRO ro) {
         Member member = new Member();
         member.setAccount(ro.getUsername());
@@ -44,6 +48,14 @@ public class MemberService {
         member.setNickName("未命名");
         memberCoreService.create(member);
         return MemberVO.of(member);
+    }
+
+    @Transactional
+    public Member modify(MemberRO ro) {
+        Member member = new Member();
+        BeanUtils.copyProperties(ro, member);
+        memberCoreService.update(member);
+        return member;
     }
 
 }

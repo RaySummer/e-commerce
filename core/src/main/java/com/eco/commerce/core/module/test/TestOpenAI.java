@@ -1,5 +1,6 @@
 package com.eco.commerce.core.module.test;
 
+import com.eco.commerce.core.utils.StringUtil;
 import com.theokanning.openai.completion.CompletionChoice;
 import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.completion.CompletionResult;
@@ -16,12 +17,13 @@ import java.util.Scanner;
  */
 public class TestOpenAI {
 
-    static final String apiKey = "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";
+    static final String apiKey = "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";
 
     static final String organizationId = "org-B2fgWNzZ4RdnzOv0Sc45eF0g";
 
     public static void main(String[] args) {
 
+        StringBuffer input = new StringBuffer();
         StringBuffer sb = new StringBuffer();
 
         boolean isChat = true;
@@ -29,12 +31,12 @@ public class TestOpenAI {
 
         OpenAiService service = new OpenAiService(apiKey);
 
-
         System.out.println("\n请输入······ 回复esc退出聊天");
 
         List<String> list = new ArrayList<>();
-        list.add(" Human:");
-        list.add(" AI:");
+
+        list.add("AI");
+        list.add("Ray");
 
         while (isChat) {
 
@@ -42,8 +44,7 @@ public class TestOpenAI {
             if (next.equalsIgnoreCase("exit")) {
                 break;
             }
-            sb.append(next);
-            sb.append("\n");
+            input.append(next);
 
             CompletionRequest completionRequest = CompletionRequest.builder()
                     .model("text-davinci-003")
@@ -60,12 +61,12 @@ public class TestOpenAI {
                     .build();
             CompletionResult completion = service.createCompletion(completionRequest);
             for (CompletionChoice choices : completion.getChoices()) {
-                sb = new StringBuffer();
                 sb.append(choices.getText());
-                sb.append("\n");
             }
-
+            input.append(sb.toString().substring(input.toString().length()));
             System.out.println(sb);
+            System.out.println("--------!!");
+            System.out.println(input);
         }
 
 
@@ -86,7 +87,7 @@ public class TestOpenAI {
 //
 //        System.out.println("\nCreating Image...");
 //        CreateImageRequest request = CreateImageRequest.builder()
-//                .prompt("二次元：喜多川海梦图片")
+//                .prompt("二次元图片")
 //                .build();
 //
 //        System.out.println("\nImage is located at:");

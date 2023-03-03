@@ -16,6 +16,8 @@ import java.io.Serializable;
 public class MemberVO implements Serializable {
     private static final long serialVersionUID = 8086881951099822445L;
 
+    private String uid;
+
     private String nickName;
 
     private Boolean gender;
@@ -37,6 +39,7 @@ public class MemberVO implements Serializable {
     public static MemberVO of(Member member) {
         MemberVO vo = new MemberVO();
         BeanUtils.copyProperties(member, vo);
+        vo.setUid(member.getUidStr());
         return vo;
     }
 }

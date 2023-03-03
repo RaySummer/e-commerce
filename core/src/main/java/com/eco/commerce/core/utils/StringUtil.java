@@ -339,4 +339,29 @@ public class StringUtil {
         }
         return ret.toString();
     }
+
+    /**
+     * 根据Key查找字符串内出现的次数
+     *
+     * @param str
+     * @param key
+     * @return
+     */
+    public static int findKeyCountByStr(String str, String key) {
+        if (StringUtils.isBlank(str) || StringUtils.isBlank(key)) {
+            return 0;
+        }
+        return str.split(key).length - 1;
+    }
+
+    public static void main(String[] args) {
+        String one = "rwdasdas";
+        String str = "rwdasdas1dafdsadsas2dasffdasdqf3wd";
+
+        int a = str.indexOf(one) + one.length();
+        System.out.println(a);
+
+        System.out.println(str.substring(one.length()));
+
+    }
 }
