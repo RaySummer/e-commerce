@@ -5,6 +5,8 @@ import com.eco.commerce.portal.module.menu.dto.vo.PortalMenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Ray
  * @since 2023/2/20
@@ -15,7 +17,7 @@ public class PortalMenuService {
     @Autowired
     private PortalMenuCoreService portalMenuCoreService;
 
-    public PortalMenuVO findMenu() {
-        return PortalMenuVO.of(portalMenuCoreService.findMenu());
+    public List<PortalMenuVO> findMenu() {
+        return PortalMenuVO.ofList(portalMenuCoreService.findMenu());
     }
 }

@@ -39,4 +39,10 @@ public class PortalMenu extends BaseEntity {
 
     @Column
     private Boolean enable;
+
+    @Column
+    private String openType;
+
+    @Column
+    private Long displayOrder;
 }

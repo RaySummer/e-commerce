@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.eco.commerce.core.module.member.dto.MemberDto;
 import com.eco.commerce.core.utils.CustomizeException;
-import com.eco.commerce.core.utils.WebThreadLocal;
+import com.eco.commerce.core.utils.HttpClientResponse;
+import com.eco.commerce.core.utils.HttpClientUtil;
 import com.eco.commerce.portal.module.openai.dto.ro.ChatGPTRO;
 import com.eco.commerce.portal.module.openai.dto.vo.ChatGPTVO;
 import com.eco.commerce.portal.module.openai.dto.vo.OpenAIGenerateImageVO;
+import com.eco.commerce.portal.module.openai.dto.vo.OpenAISpeechToTextVO;
 import com.eco.commerce.portal.module.openai.enums.ChatGPTTypeEnum;
 import com.theokanning.openai.completion.CompletionChoice;
 import com.theokanning.openai.completion.CompletionRequest;
@@ -20,10 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Ray
@@ -38,6 +44,9 @@ public class OpenAIService {
 
     @Value("${open.ai.organization.id}")
     public String openAIOrganizationId;
+
+    @Value("${open.ai.url}")
+    public String openAIUrl;
 
     @Autowired
     private ChatGPTRecodeService chatGPTRecodeService;
@@ -63,36 +72,63 @@ public class OpenAIService {
                 .type(ChatGPTTypeEnum.TO_GPT.name())
                 .build());
 
-        log.warn("chatContentList: {}", JSONObject.parseArray(JSON.toJSONString(chatContentVOList)));
-
-        //2. 生成OpenAI对象，把内容发送到OpenAI
-        OpenAiService service = new OpenAiService(openAIKey);
-
         List<String> shopList = new ArrayList<>();
         shopList.add(memberDto.getNickName());
         shopList.add("AI");
 
-        CompletionRequest completionRequest = CompletionRequest.builder()
-                .model("text-davinci-003")
-                .prompt(currentContent)
-                .temperature(0.9)
-                .echo(true)
-                .maxTokens(100)
-                .topP(1.0)
-                .frequencyPenalty(0.0)
-                .presencePenalty(0.6)
-                .stop(shopList)
-                .user(memberDto.getNickName())
-                .n(1)
-                .build();
-        CompletionResult completion = service.createCompletion(completionRequest);
+        log.warn("chatContentList: {}", JSONObject.parseArray(JSON.toJSONString(chatContentVOList)));
+        String replyContent = null;
 
-        //3. 拿到OpenAI的回调数据，把数据拆分后封装到chatGPTVO
-        String replyContent = "";
-        for (CompletionChoice choices : completion.getChoices()) {
-            replyContent = choices.getText();
+        try {
+            //2. 生成OpenAI对象，把内容发送到OpenAI
+            OpenAiService service = new OpenAiService(openAIKey);
+
+            CompletionRequest completionRequest = CompletionRequest.builder()
+                    .model("text-davinci-003")
+                    .prompt(currentContent)
+                    .temperature(0.9)
+                    .echo(true)
+                    .maxTokens(100)
+                    .topP(1.0)
+                    .frequencyPenalty(0.0)
+                    .presencePenalty(0.6)
+                    .stop(shopList)
+                    .user(memberDto.getNickName())
+                    .n(1)
+                    .build();
+            CompletionResult completion = service.createCompletion(completionRequest);
+
+            //3. 拿到OpenAI的回调数据，把数据拆分后封装到chatGPTVO
+            replyContent = "";
+            for (CompletionChoice choices : completion.getChoices()) {
+                replyContent = choices.getText();
+            }
+            log.warn("replyContent: {}", replyContent);
+        } catch (Exception e) {
+            log.error("Using OpenAI Service worn：{}", e.getMessage());
+
+            Map<String, Object> bodyMap = new HashMap<>();
+            bodyMap.put("model", "text-davinci-003");
+            bodyMap.put("prompt", currentContent);
+            bodyMap.put("temperature", 0.9);
+            bodyMap.put("max_tokens", 150);
+            bodyMap.put("frequency_penalty", 0);
+            bodyMap.put("presence_penalty", 0.6);
+            bodyMap.put("stop", shopList);
+            bodyMap.put("user", memberDto.getNickName());
+
+            String body = JSON.toJSONString(bodyMap);
+            log.warn("body:{}", body);
+
+            String result = HttpClientUtil.doPost(openAIUrl, body, openAIKey, true);
+
+            log.warn(result);
+
         }
-        log.warn("replyContent: {}", replyContent);
+
+        if (StringUtils.isBlank(replyContent)) {
+            throw new CustomizeException("OpenAI reply is null");
+        }
 
         //所有内容的字符长度计数器，用于截取回复内容，只需要回复内容不需要所有回复的记录
         int calcStrSum = 0;
@@ -101,9 +137,6 @@ public class OpenAIService {
         }
         log.warn("calcStrSum: {}", calcStrSum);
 
-        if (StringUtils.isBlank(replyContent)) {
-            throw new CustomizeException("OpenAI reply is null");
-        }
         chatContentVOList.add(ChatGPTVO.ChatContentVO
                 .builder()
                 .content(replyContent.substring(calcStrSum))
@@ -132,6 +165,25 @@ public class OpenAIService {
         log.warn("OpenAI created image, The link is :{}", imageLink);
 
         return OpenAIGenerateImageVO.builder().imageLink(imageLink).build();
+    }
+
+    public OpenAISpeechToTextVO speechToText(File uploadFile) {
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + openAIKey);
+
+        Map<String, Object> param = new HashMap<>();
+
+        param.put("file", uploadFile);
+        param.put("model", "whisper-1");
+
+        HttpClientResponse httpClientResponse = (HttpClientResponse) HttpClientUtil.multipartPost(openAIUrl, headers, param);
+
+        if (httpClientResponse.getStatusCode() != 200) {
+            throw new CustomizeException("http execute failed.");
+        }
+        log.warn("http response is {}", httpClientResponse.getEntityContent());
+        return OpenAISpeechToTextVO.builder().text(httpClientResponse.getEntityContent()).build();
     }
 
 

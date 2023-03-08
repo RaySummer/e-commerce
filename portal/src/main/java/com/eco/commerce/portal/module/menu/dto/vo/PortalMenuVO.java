@@ -6,6 +6,9 @@ import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ray
@@ -23,6 +26,8 @@ public class PortalMenuVO implements Serializable {
 
     private String icon;
 
+    private String openType;
+
     public static PortalMenuVO of(PortalMenu portalMenu) {
         if (portalMenu == null) {
             return null;
@@ -30,5 +35,12 @@ public class PortalMenuVO implements Serializable {
         PortalMenuVO vo = new PortalMenuVO();
         BeanUtils.copyProperties(portalMenu, vo);
         return vo;
+    }
+
+    public static List<PortalMenuVO> ofList(List<PortalMenu> portalMenuList) {
+        if (portalMenuList.isEmpty()) {
+            return null;
+        }
+        return portalMenuList.stream().map(PortalMenuVO::of).collect(Collectors.toList());
     }
 }
