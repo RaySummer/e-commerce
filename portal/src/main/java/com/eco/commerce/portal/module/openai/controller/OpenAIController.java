@@ -11,6 +11,7 @@ import com.eco.commerce.portal.module.openai.service.OpenAIService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,9 @@ public class OpenAIController {
 
     @Autowired
     private OpenAIService openAIService;
+
+    @Value("${upload.file.path}")
+    private String filePath;
 
 
     @NoRepeatSubmit
@@ -86,7 +90,7 @@ public class OpenAIController {
             log.warn("file name is {}:", multipartFile.getOriginalFilename());
             log.warn("fileExt is {}:", fileExt);
 
-            File fileFolder = new File("D://uploads");
+            File fileFolder = new File(filePath);
 
             if (!fileFolder.exists()) {
                 fileFolder.mkdirs();
@@ -94,7 +98,7 @@ public class OpenAIController {
 
             String newFileName = UUID.randomUUID() + "." + fileExt;
 
-            fileSave = new File("D://uploads", newFileName);
+            fileSave = new File(filePath, newFileName);
             multipartFile.transferTo(fileSave);
 
             log.warn("upload success!! file name is {}:", newFileName);
