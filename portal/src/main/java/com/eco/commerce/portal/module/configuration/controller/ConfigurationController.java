@@ -31,14 +31,14 @@ public class ConfigurationController {
         return Response.of();
     }
 
-    @PutMapping("#{uid}")
-    public Response updateConfig(@PathVariable String uid, @RequestBody ConfigurationRO configurationRO) {
-        return Response.of(configurationService.updateConfiguration(uid, configurationRO));
-    }
-
     @PostMapping
     public Response createConfig(@RequestBody ConfigurationRO configurationRO) {
         return Response.of(configurationService.createConfiguration(configurationRO));
+    }
+
+    @PutMapping("/{uid}")
+    public Response update(@PathVariable String uid, @RequestBody ConfigurationRO configurationRO) {
+        return Response.of(configurationService.updateConfiguration(uid, configurationRO));
     }
 
 
