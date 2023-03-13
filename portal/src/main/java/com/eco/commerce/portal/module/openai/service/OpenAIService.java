@@ -134,6 +134,8 @@ public class OpenAIService {
                 .type(ChatGPTTypeEnum.TO_ME.name())
                 .build());
         log.warn("add reply after chatContentVOList : {}", JSONObject.parseArray(JSON.toJSONString(chatContentVOList)));
+        chatGPTVO.setContents(chatContentVOList);
+
         chatGPTRecodeService.save(chatGPTVO);
 
         return chatGPTVO;

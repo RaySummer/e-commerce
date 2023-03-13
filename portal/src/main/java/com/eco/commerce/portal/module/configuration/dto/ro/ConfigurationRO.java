@@ -1,8 +1,6 @@
 package com.eco.commerce.portal.module.configuration.dto.ro;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
