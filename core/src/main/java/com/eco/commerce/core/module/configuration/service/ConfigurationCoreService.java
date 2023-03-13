@@ -6,6 +6,8 @@ import com.eco.commerce.core.module.configuration.repository.ConfigurationReposi
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Ray
  * @since 2023/2/21
@@ -14,4 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConfigurationCoreService extends BaseCrudServiceImpl<ConfigurationRepository, Configuration, Long> {
 
+    public List<Configuration> findAllByPlatform(String platform) {
+        return baseRepository.findAllByPlatformAndDeletedByIsNull(platform);
+    }
+
+    public boolean isExistByKeyAndPlatform(String key, String platform) {
+        return baseRepository.findByKeyAndPlatform(key, platform) != null;
+    }
 }

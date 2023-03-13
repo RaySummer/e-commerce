@@ -6,6 +6,7 @@ import com.eco.commerce.core.module.member.dto.MemberDto;
 import com.eco.commerce.core.utils.CustomizeException;
 import com.eco.commerce.core.utils.HttpClientResponse;
 import com.eco.commerce.core.utils.HttpClientUtil;
+import com.eco.commerce.portal.cache.CacheDataUtil;
 import com.eco.commerce.portal.module.openai.dto.ro.ChatGPTRO;
 import com.eco.commerce.portal.module.openai.dto.vo.ChatGPTVO;
 import com.eco.commerce.portal.module.openai.dto.vo.OpenAIGenerateImageVO;
@@ -19,10 +20,8 @@ import com.theokanning.openai.service.OpenAiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,15 +37,6 @@ import java.util.Map;
 @Slf4j
 @Service
 public class OpenAIService {
-
-    @Value("${open.ai.private.key}")
-    public String openAIKey;
-
-    @Value("${open.ai.organization.id}")
-    public String openAIOrganizationId;
-
-    @Value("${open.ai.url}")
-    public String openAIUrl;
 
     @Autowired
     private ChatGPTRecodeService chatGPTRecodeService;
@@ -79,9 +69,9 @@ public class OpenAIService {
         log.warn("chatContentList: {}", JSONObject.parseArray(JSON.toJSONString(chatContentVOList)));
         String replyContent = null;
 
-        try {
+//        try {
             //2. 生成OpenAI对象，把内容发送到OpenAI
-            OpenAiService service = new OpenAiService(openAIKey);
+            OpenAiService service = new OpenAiService(CacheDataUtil.openAIConfigVO.getApiKey());
 
             CompletionRequest completionRequest = CompletionRequest.builder()
                     .model("text-davinci-003")
@@ -104,27 +94,27 @@ public class OpenAIService {
                 replyContent = choices.getText();
             }
             log.warn("replyContent: {}", replyContent);
-        } catch (Exception e) {
-            log.error("Using OpenAI Service worn：{}", e.getMessage());
-
-            Map<String, Object> bodyMap = new HashMap<>();
-            bodyMap.put("model", "text-davinci-003");
-            bodyMap.put("prompt", currentContent);
-            bodyMap.put("temperature", 0.9);
-            bodyMap.put("max_tokens", 150);
-            bodyMap.put("frequency_penalty", 0);
-            bodyMap.put("presence_penalty", 0.6);
-            bodyMap.put("stop", shopList);
-            bodyMap.put("user", memberDto.getNickName());
-
-            String body = JSON.toJSONString(bodyMap);
-            log.warn("body:{}", body);
-
-            String result = HttpClientUtil.doPost(openAIUrl, body, openAIKey, true);
-
-            log.warn(result);
-
-        }
+//        } catch (Exception e) {
+//            log.error("Using OpenAI Service worn：{}", e.getMessage());
+//
+//            Map<String, Object> bodyMap = new HashMap<>();
+//            bodyMap.put("model", "text-davinci-003");
+//            bodyMap.put("prompt", currentContent);
+//            bodyMap.put("temperature", 0.9);
+//            bodyMap.put("max_tokens", 150);
+//            bodyMap.put("frequency_penalty", 0);
+//            bodyMap.put("presence_penalty", 0.6);
+//            bodyMap.put("stop", shopList);
+//            bodyMap.put("user", memberDto.getNickName());
+//
+//            String body = JSON.toJSONString(bodyMap);
+//            log.warn("body:{}", body);
+//
+//            String result = HttpClientUtil.doPost(CacheDataUtil.openAIConfigVO.getOpenAIUrl(), body, CacheDataUtil.openAIConfigVO.getApiKey(), true);
+//
+//            log.warn(result);
+//
+//        }
 
         if (StringUtils.isBlank(replyContent)) {
             throw new CustomizeException("OpenAI reply is null");
@@ -152,7 +142,7 @@ public class OpenAIService {
 
     public OpenAIGenerateImageVO generateImage(ChatGPTRO chatGPTRO) {
 
-        OpenAiService service = new OpenAiService(openAIKey);
+        OpenAiService service = new OpenAiService(CacheDataUtil.openAIConfigVO.getApiKey());
 
         log.warn(" OpenAI creating image from content :{}", chatGPTRO.getContent());
 
@@ -170,14 +160,14 @@ public class OpenAIService {
     public OpenAISpeechToTextVO speechToText(File uploadFile) {
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + openAIKey);
+        headers.put("Authorization", "Bearer " + CacheDataUtil.openAIConfigVO.getApiKey());
 
         Map<String, Object> param = new HashMap<>();
 
         param.put("file", uploadFile);
         param.put("model", "whisper-1");
 
-        HttpClientResponse httpClientResponse = (HttpClientResponse) HttpClientUtil.multipartPost(openAIUrl, headers, param);
+        HttpClientResponse httpClientResponse = (HttpClientResponse) HttpClientUtil.multipartPost(CacheDataUtil.openAIConfigVO.getOpenAIUrl(), headers, param);
 
         if (httpClientResponse.getStatusCode() != 200) {
             throw new CustomizeException("http execute failed.");

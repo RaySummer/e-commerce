@@ -23,17 +23,20 @@ import javax.persistence.UniqueConstraint;
 @Setter
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "member", schema = "public", uniqueConstraints = {
+@Table(name = "configuration", schema = "public", uniqueConstraints = {
         @UniqueConstraint(columnNames = "uid")
 })
 public class Configuration extends BaseEntity {
 
     @Column
     private String key;
+
     @Column
     private String value;
+
     @Column
     private String description;
+
     @Column
     private String platform;
 }
