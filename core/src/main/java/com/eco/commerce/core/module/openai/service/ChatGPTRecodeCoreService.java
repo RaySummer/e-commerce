@@ -28,6 +28,6 @@ public class ChatGPTRecodeCoreService extends BaseCrudServiceImpl<ChatGPTRecodeR
     }
 
     public void deleteRecodeByMember(Member member) {
-        baseRepository.deleteByMember(member);
+        baseRepository.deleteRecodeByMember(member);
     }
 }

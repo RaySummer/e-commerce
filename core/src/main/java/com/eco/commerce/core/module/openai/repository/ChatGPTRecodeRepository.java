@@ -17,5 +17,6 @@ public interface ChatGPTRecodeRepository extends BaseRepository<ChatGPTRecode, L
     @Query(value = "select cr from ChatGPTRecode AS cr where cr.member.id = :#{#memberId} and cr.deletedBy is null order by cr.createdTime")
     List<ChatGPTRecode> findRecodeByMember(@Param("memberId") long memberId);
 
-    void deleteByMember(Member member);
+    @Query(value = "delete from ChatGPTRecode where Member = :#{#member} ")
+    void deleteRecodeByMember(Member member);
 }
