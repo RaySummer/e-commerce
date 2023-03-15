@@ -26,4 +26,8 @@ public class ChatGPTRecodeCoreService extends BaseCrudServiceImpl<ChatGPTRecodeR
     public void saveOrUpdateRecode(List<ChatGPTRecode> chatGPTRecodeList) {
         baseRepository.saveAllAndFlush(chatGPTRecodeList);
     }
+
+    public void deleteRecodeByMember(Member member) {
+        baseRepository.deleteByMember(member);
+    }
 }
