@@ -50,7 +50,7 @@ public class ChatGPTRecodeService {
                     .member(member)
                     .type(chatContentVO.getType()).build());
         });
-        chatGPTRecodeCoreService.deleteRecodeByMember(member);
+        chatGPTRecodeCoreService.deleteRecodeByMember(member.getId());
         chatGPTRecodeCoreService.createAll(chatGPTRecodeList);
     }
 
