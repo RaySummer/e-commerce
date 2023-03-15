@@ -83,7 +83,7 @@ public class OpenAIService {
                 .prompt(sb.toString())
                 .temperature(0.9)
                 .echo(true)
-                .maxTokens(100)
+                .maxTokens(200)
                 .topP(1.0)
                 .frequencyPenalty(0.0)
                 .presencePenalty(0.6)
