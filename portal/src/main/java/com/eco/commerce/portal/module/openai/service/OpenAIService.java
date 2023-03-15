@@ -44,7 +44,6 @@ public class OpenAIService {
 
     @Transactional
     public ChatGPTVO ChatToAI(ChatGPTRO chatGPTRO, MemberDto memberDto) throws Exception {
-        String currentContent = chatGPTRO.getContent();
 
         // 1. 先找出之前的对话记录，然后把当前的内容放到对话记录的List里面
         ChatGPTVO chatGPTVO = chatGPTRecodeService.findRecodeByMember(memberDto);
@@ -67,54 +66,39 @@ public class OpenAIService {
         shopList.add("AI");
 
         log.warn("chatContentList: {}", JSONObject.parseArray(JSON.toJSONString(chatContentVOList)));
-        String replyContent = null;
 
-//        try {
-            //2. 生成OpenAI对象，把内容发送到OpenAI
-            OpenAiService service = new OpenAiService(CacheDataUtil.openAIConfigVO.getApiKey());
+        StringBuilder sb = new StringBuilder();
 
-            CompletionRequest completionRequest = CompletionRequest.builder()
-                    .model("text-davinci-003")
-                    .prompt(currentContent)
-                    .temperature(0.9)
-                    .echo(true)
-                    .maxTokens(100)
-                    .topP(1.0)
-                    .frequencyPenalty(0.0)
-                    .presencePenalty(0.6)
-                    .stop(shopList)
-                    .user(memberDto.getNickName())
-                    .n(1)
-                    .build();
-            CompletionResult completion = service.createCompletion(completionRequest);
+        for (ChatGPTVO.ChatContentVO chatContentVO : chatContentVOList) {
+            sb.append(chatContentVO.getContent());
+        }
 
-            //3. 拿到OpenAI的回调数据，把数据拆分后封装到chatGPTVO
-            replyContent = "";
-            for (CompletionChoice choices : completion.getChoices()) {
-                replyContent = choices.getText();
-            }
-            log.warn("replyContent: {}", replyContent);
-//        } catch (Exception e) {
-//            log.error("Using OpenAI Service worn：{}", e.getMessage());
-//
-//            Map<String, Object> bodyMap = new HashMap<>();
-//            bodyMap.put("model", "text-davinci-003");
-//            bodyMap.put("prompt", currentContent);
-//            bodyMap.put("temperature", 0.9);
-//            bodyMap.put("max_tokens", 150);
-//            bodyMap.put("frequency_penalty", 0);
-//            bodyMap.put("presence_penalty", 0.6);
-//            bodyMap.put("stop", shopList);
-//            bodyMap.put("user", memberDto.getNickName());
-//
-//            String body = JSON.toJSONString(bodyMap);
-//            log.warn("body:{}", body);
-//
-//            String result = HttpClientUtil.doPost(CacheDataUtil.openAIConfigVO.getOpenAIUrl(), body, CacheDataUtil.openAIConfigVO.getApiKey(), true);
-//
-//            log.warn(result);
-//
-//        }
+        String replyContent;
+
+        //2. 生成OpenAI对象，把内容发送到OpenAI
+        OpenAiService service = new OpenAiService(CacheDataUtil.openAIConfigVO.getApiKey());
+
+        CompletionRequest completionRequest = CompletionRequest.builder()
+                .model("text-davinci-003")
+                .prompt(sb.toString())
+                .temperature(0.9)
+                .echo(true)
+                .maxTokens(100)
+                .topP(1.0)
+                .frequencyPenalty(0.0)
+                .presencePenalty(0.6)
+                .stop(shopList)
+                .user(memberDto.getNickName())
+                .n(1)
+                .build();
+        CompletionResult completion = service.createCompletion(completionRequest);
+
+        //3. 拿到OpenAI的回调数据，把数据拆分后封装到chatGPTVO
+        replyContent = "";
+        for (CompletionChoice choices : completion.getChoices()) {
+            replyContent = choices.getText();
+        }
+        log.warn("replyContent: {}", replyContent);
 
         if (StringUtils.isBlank(replyContent)) {
             throw new CustomizeException("OpenAI reply is null");
