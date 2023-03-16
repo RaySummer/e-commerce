@@ -64,4 +64,14 @@ public class ChatGPTRecodeService {
         return ChatGPTVO.of(ChatGPTVO.ofList(chatGPTRecodeCoreService.findRecode(member)));
     }
 
+    @Transactional
+    public void clearRecode(String memberUid) {
+
+        Member member = memberCoreService.findByUid(memberUid);
+
+        Assert.notNull(member, "Member is null");
+
+        chatGPTRecodeCoreService.deleteRecodeByMember(member);
+    }
+
 }

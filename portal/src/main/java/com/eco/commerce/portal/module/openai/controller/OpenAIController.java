@@ -7,11 +7,13 @@ import com.eco.commerce.core.utils.LockHelper;
 import com.eco.commerce.core.utils.Response;
 import com.eco.commerce.core.utils.WebThreadLocal;
 import com.eco.commerce.portal.module.openai.dto.ro.ChatGPTRO;
+import com.eco.commerce.portal.module.openai.service.ChatGPTRecodeService;
 import com.eco.commerce.portal.module.openai.service.OpenAIService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,9 @@ public class OpenAIController {
     @Autowired
     private OpenAIService openAIService;
 
+    @Autowired
+    private ChatGPTRecodeService chatGPTRecodeService;
+
     @Value("${upload.file.path}")
     private String filePath;
 
@@ -58,6 +63,18 @@ public class OpenAIController {
             return Response.ofError(e.getMessage());
         } finally {
             lock.unlock();
+        }
+    }
+
+    @DeleteMapping("chat-to-ai")
+    public Response clearRecode() {
+        try {
+            MemberDto memberDto = WebThreadLocal.getMember();
+            chatGPTRecodeService.clearRecode(memberDto.getUidStr());
+            return Response.of();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.ofError();
         }
     }
 

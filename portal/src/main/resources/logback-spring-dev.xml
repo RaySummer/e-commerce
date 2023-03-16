@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="false">
 
-    <property name="LOG_FILE_HOME" value="/home/project/eco-ai/logs"/>
+    <property name="LOG_FILE_HOME" value="/usr/local/project/projectJar/eco-ai/logs"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
