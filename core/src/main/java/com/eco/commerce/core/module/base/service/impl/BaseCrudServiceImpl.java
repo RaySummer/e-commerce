@@ -1,11 +1,11 @@
 package com.eco.commerce.core.module.base.service.impl;
 
 import com.eco.commerce.core.constants.Constants;
-import com.eco.commerce.core.module.base.model.BaseEntity;
-import com.google.common.collect.Lists;
+import com.eco.commerce.core.module.base.model.BaseEntitys;
 import com.eco.commerce.core.module.base.repository.BaseRepository;
 import com.eco.commerce.core.module.base.service.BaseCrudService;
 import com.eco.commerce.core.utils.WebThreadLocal;
+import com.google.common.collect.Lists;
 import com.querydsl.codegen.Keywords;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
@@ -20,19 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Ray
  * @since 2023/02/14
  **/
 @Transactional
-public abstract class BaseCrudServiceImpl<X extends BaseRepository<T1, ID>, T1 extends BaseEntity, ID extends Serializable> implements BaseCrudService<T1, ID> {
+public abstract class BaseCrudServiceImpl<X extends BaseRepository<T1, ID>, T1 extends BaseEntitys, ID extends Serializable> implements BaseCrudService<T1, ID> {
 
     @Autowired
     protected X baseRepository;

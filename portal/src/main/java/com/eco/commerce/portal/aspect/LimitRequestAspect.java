@@ -27,15 +27,15 @@ public class LimitRequestAspect {
     /**
      * 定义切点
      * 让所有标注@LimitRequest注解的方法都执行切面方法
+     *
      * @param limitRequest
      */
     @Pointcut("@annotation(limitRequest)")
     public void executeService(LimitRequest limitRequest) {
-
+        System.out.println("");
     }
 
     /**
-     *
      * @param limitRequest
      * @param limitRequest
      * @return
@@ -56,8 +56,8 @@ public class LimitRequestAspect {
 
         if (uCount >= limitRequest.count()) { // 超过次数，不执行目标方法
             //这里的返回对象类型根据controller方法的返回方式一致
-            return Response.ofError(500,"接口访问次数超过限制,请12小时候重试");
-        } else if (uCount == 0){ // 第一次请求时，设置开始有效时间
+            return Response.ofError(500, "接口访问次数超过限制,请稍后再试");
+        } else if (uCount == 0) { // 第一次请求时，设置开始有效时间
             map.put(request.getRemoteAddr(), uCount + 1, ExpirationPolicy.CREATED, limitRequest.time(), TimeUnit.MILLISECONDS);
         } else { // 未超过次数， 记录数据加一
             map.put(request.getRemoteAddr(), uCount + 1);

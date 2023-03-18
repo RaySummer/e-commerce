@@ -1,6 +1,7 @@
 package com.eco.commerce.portal.module.openai.controller;
 
 import com.eco.commerce.core.annotation.NoRepeatSubmit;
+import com.eco.commerce.core.aspect.LimitRequest;
 import com.eco.commerce.core.module.member.dto.MemberDto;
 import com.eco.commerce.core.utils.HttpClientUtil;
 import com.eco.commerce.core.utils.LockHelper;
@@ -47,7 +48,7 @@ public class OpenAIController {
     @Value("${upload.file.path}")
     private String filePath;
 
-
+    @LimitRequest(count = 20, time = 30000)
     @NoRepeatSubmit
     @PostMapping("chat-to-ai")
     public Response chatToAI(@RequestBody ChatGPTRO ro) {
@@ -66,7 +67,8 @@ public class OpenAIController {
         }
     }
 
-    @DeleteMapping("chat-to-ai")
+    @LimitRequest(count = 20, time = 30000)
+    @DeleteMapping("clear-recode")
     public Response clearRecode() {
         try {
             MemberDto memberDto = WebThreadLocal.getMember();
@@ -78,6 +80,7 @@ public class OpenAIController {
         }
     }
 
+    @LimitRequest(count = 20, time = 30000)
     @NoRepeatSubmit
     @PostMapping("ai-generate-image")
     public Response generateImages(@RequestBody ChatGPTRO ro) {
@@ -96,6 +99,7 @@ public class OpenAIController {
         }
     }
 
+    @LimitRequest(count = 20, time = 30000)
     @NoRepeatSubmit
     @PostMapping("speech-to-text")
     public Response speechToText(@RequestParam("file") MultipartFile multipartFile) {

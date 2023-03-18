@@ -7,30 +7,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Serializable;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
-/**
- * @author Ray
- * @since 2023/2/14
- */
 @Getter
 @Setter
 @Access(AccessType.FIELD)
 @Slf4j
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+public class BaseEntitys {
 
     private static final long serialVersionUID = 1L;
 
@@ -69,10 +55,10 @@ public class BaseEntity implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BaseEntity)) {
+        if (!(o instanceof BaseEntitys)) {
             return false;
         }
-        BaseEntity that = (BaseEntity) o;
+        BaseEntitys that = (BaseEntitys) o;
         return Objects.equal(getId(), that.getId())
                 && Objects.equal(getUid(), that.getUid());
     }
@@ -93,5 +79,4 @@ public class BaseEntity implements Serializable {
     public boolean isDeleted() {
         return deletedTime != null;
     }
-
 }

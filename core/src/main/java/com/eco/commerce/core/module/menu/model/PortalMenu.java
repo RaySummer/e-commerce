@@ -1,17 +1,12 @@
 package com.eco.commerce.core.module.menu.model;
 
-import com.eco.commerce.core.module.base.model.BaseEntity;
+import com.eco.commerce.core.module.base.model.BaseEntitys;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 /**
  * @author Ray
@@ -26,7 +21,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "portal_menu", schema = "public", uniqueConstraints = {
         @UniqueConstraint(columnNames = "uid")
 })
-public class PortalMenu extends BaseEntity {
+public class PortalMenu extends BaseEntitys {
 
     @Column
     private String name;
