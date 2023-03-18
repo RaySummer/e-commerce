@@ -187,6 +187,12 @@
             <artifactId>caffeine</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.jodah/expiringmap -->
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>expiringmap</artifactId>
+        </dependency>
+
     </dependencies>
 
    <!-- <reporting>
