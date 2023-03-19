@@ -22,4 +22,6 @@ public class Constants {
 
     public static final String RUNTIME_ENV_LOCAL = "local";
 
+    public static final String CONFIG_REF_OPEN_AI_KEY = "OPEN_AI";
+
 }

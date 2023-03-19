@@ -23,4 +23,8 @@ public class ConfigurationCoreService extends BaseCrudServiceImpl<ConfigurationR
     public boolean isExistByKeyAndPlatform(String key, String platform) {
         return baseRepository.findByKeyAndPlatform(key, platform) != null;
     }
+
+    public Configuration findByKeyAndPlatform(String key, String platform) {
+        return baseRepository.findByKeyAndPlatform(key, platform);
+    }
 }

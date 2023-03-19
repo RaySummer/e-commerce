@@ -1,6 +1,7 @@
 package com.eco.commerce.portal.module.menu.service;
 
 import com.eco.commerce.core.module.menu.service.PortalMenuCoreService;
+import com.eco.commerce.portal.cache.CacheDataUtil;
 import com.eco.commerce.portal.module.menu.dto.vo.PortalMenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,13 @@ public class PortalMenuService {
     private PortalMenuCoreService portalMenuCoreService;
 
     public List<PortalMenuVO> findMenu() {
-        return PortalMenuVO.ofList(portalMenuCoreService.findMenu());
+
+        List<PortalMenuVO> voList = CacheDataUtil.portalMenuVOList;
+
+        if (voList == null || voList.isEmpty()) {
+            voList = PortalMenuVO.ofList(portalMenuCoreService.findMenu());
+        }
+
+        return voList;
     }
 }

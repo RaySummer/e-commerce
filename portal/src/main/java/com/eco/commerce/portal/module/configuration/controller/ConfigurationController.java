@@ -1,6 +1,7 @@
 package com.eco.commerce.portal.module.configuration.controller;
 
 import com.eco.commerce.core.utils.Response;
+import com.eco.commerce.portal.cache.CacheDataUtil;
 import com.eco.commerce.portal.module.configuration.dto.ro.ConfigurationRO;
 import com.eco.commerce.portal.module.configuration.service.ConfigurationService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +26,9 @@ public class ConfigurationController {
     @Autowired
     private ConfigurationService configurationService;
 
-    @GetMapping("/refresh")
+    @GetMapping("/refresh-all-config")
     public Response refreshConfig() {
-        configurationService.refreshConfig();
+        configurationService.refreshAllConfig();
         return Response.of();
     }
 
