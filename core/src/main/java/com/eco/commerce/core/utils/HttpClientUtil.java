@@ -330,6 +330,7 @@ public class HttpClientUtil {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         // 使用 try-with-resources 发起请求，保证请求完成后资源关闭
         try (CloseableHttpResponse httpResponse = httpClient.execute(httpRequestBase, context)) {
+            log.warn("httpResponse:{}", httpResponse);
             // 处理响应头
             Map<String, List<String>> headers = headerToMap(httpResponse.getAllHeaders());
             // 处理响应体
