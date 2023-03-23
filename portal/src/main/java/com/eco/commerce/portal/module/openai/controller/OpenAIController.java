@@ -111,7 +111,7 @@ public class OpenAIController {
             log.warn("file name is {}:", multipartFile.getOriginalFilename());
             log.warn("fileExt is {}:", fileExt);
 
-            if (!fileExt.toLowerCase().contains("mp3") || !fileExt.toLowerCase().contains("mp4") || !fileExt.toLowerCase().contains("war")) {
+            if (!fileExt.toLowerCase().contains("mp3") && !fileExt.toLowerCase().contains("mp4") && !fileExt.toLowerCase().contains("war")) {
                 return Response.ofError(500, "该功能暂时只支持MP3 MP4 WAR格式的音频文件");
             }
 
