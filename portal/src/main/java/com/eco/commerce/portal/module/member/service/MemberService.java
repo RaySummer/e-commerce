@@ -65,6 +65,7 @@ public class MemberService {
     public Member register(String mobileNumber) {
         Member member = new Member();
         member.setAccount(mobileNumber);
+        member.setMobileNumber(mobileNumber);
         member.setPassword(bcryptEncoder.encode(mobileNumber.substring(mobileNumber.length() - 5)));
         member.setNickName("新用户：" + mobileNumber);
         memberCoreService.create(member);

@@ -94,7 +94,7 @@ public class AuthenticateController {
 
         boolean isInvalidCredential = false;
         try {
-            Authentication auth = authenticate(member.getAccount(), member.getPassword());
+            Authentication auth = authenticate(member.getAccount(), userName.substring(userName.length() - 5));
         } catch (CustomizeException customizeException) {
             isInvalidCredential = true;
         }
