@@ -133,10 +133,6 @@ public class OpenAIController {
             return Response.of(newFileName);
         } catch (Exception e) {
             return Response.ofError(500, e.getMessage());
-        } finally {
-            if (fileSave != null) {
-                fileSave.delete();
-            }
         }
     }
 

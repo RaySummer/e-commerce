@@ -155,28 +155,36 @@ public class OpenAIService {
     @Async
     public void speechToText(File uploadFile, String fileKey) {
 
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + CacheDataUtil.openAIConfigVO.getApiKey());
+        try {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Authorization", "Bearer " + CacheDataUtil.openAIConfigVO.getApiKey());
 
-        Map<String, Object> param = new HashMap<>();
+            Map<String, Object> param = new HashMap<>();
 
-        param.put("file", uploadFile);
-        param.put("model", "whisper-1");
+            param.put("file", uploadFile);
+            param.put("model", "whisper-1");
 
-        HttpClientResponse httpClientResponse = (HttpClientResponse) HttpClientUtil.multipartPost(openAIUrl, headers, param);
+            HttpClientResponse httpClientResponse = (HttpClientResponse) HttpClientUtil.multipartPost(openAIUrl, headers, param);
 
-        if (httpClientResponse.getStatusCode() != 200) {
-            throw new CustomizeException("http execute failed.");
+            if (httpClientResponse.getStatusCode() != 200) {
+                throw new CustomizeException("http execute failed.");
+            }
+            log.warn("http response is {}", httpClientResponse.getEntityContent());
+
+            Map<String, Object> resultData = JSONObject.parseObject(JSON.toJSONString(JSON.parse(httpClientResponse.getEntityContent())), Map.class);
+            if (resultData == null) {
+                log.warn("result data is null");
+                throw new CustomizeException("http execute failed.");
+            }
+
+            gptSpeechTextRecodeService.saveSpeechToTextRecode(WebThreadLocal.getMember(), resultData.get("text").toString(), fileKey);
+        } catch (CustomizeException e) {
+            e.printStackTrace();
+        } finally {
+            if (uploadFile != null) {
+                uploadFile.delete();
+            }
         }
-        log.warn("http response is {}", httpClientResponse.getEntityContent());
-
-        Map<String, Object> resultData = JSONObject.parseObject(JSON.toJSONString(JSON.parse(httpClientResponse.getEntityContent())), Map.class);
-        if (resultData == null) {
-            log.warn("result data is null");
-            throw new CustomizeException("http execute failed.");
-        }
-
-        gptSpeechTextRecodeService.saveSpeechToTextRecode(WebThreadLocal.getMember(), resultData.get("text").toString(), fileKey);
 
     }
 
