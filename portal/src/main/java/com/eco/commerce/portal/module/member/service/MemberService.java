@@ -45,7 +45,7 @@ public class MemberService {
         Member member = new Member();
         member.setAccount(ro.getUsername());
         member.setPassword(bcryptEncoder.encode(ro.getPassword()));
-        member.setNickName("未命名");
+        member.setNickName("新用户：" + ro.getUsername());
         memberCoreService.create(member);
         return MemberVO.of(member);
     }
@@ -55,6 +55,19 @@ public class MemberService {
         Member member = new Member();
         BeanUtils.copyProperties(ro, member);
         memberCoreService.update(member);
+        return member;
+    }
+
+    public Member findMemberByAccount(String account) {
+        return memberCoreService.findMemberByAccount(account);
+    }
+
+    public Member register(String mobileNumber) {
+        Member member = new Member();
+        member.setAccount(mobileNumber);
+        member.setPassword(bcryptEncoder.encode(mobileNumber.substring(mobileNumber.length() - 5)));
+        member.setNickName("新用户：" + mobileNumber);
+        memberCoreService.create(member);
         return member;
     }
 
