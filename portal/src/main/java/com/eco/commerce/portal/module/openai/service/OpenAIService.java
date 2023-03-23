@@ -21,6 +21,7 @@ import com.theokanning.openai.service.OpenAiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,9 @@ public class OpenAIService {
 
     @Autowired
     private GPTSpeechTextRecodeService gptSpeechTextRecodeService;
+
+    @Value("${open.ai.url}")
+    private String openAIUrl;
 
 
     @Transactional
@@ -159,7 +163,7 @@ public class OpenAIService {
         param.put("file", uploadFile);
         param.put("model", "whisper-1");
 
-        HttpClientResponse httpClientResponse = (HttpClientResponse) HttpClientUtil.multipartPost(CacheDataUtil.openAIConfigVO.getOpenAIUrl(), headers, param);
+        HttpClientResponse httpClientResponse = (HttpClientResponse) HttpClientUtil.multipartPost(openAIUrl, headers, param);
 
         if (httpClientResponse.getStatusCode() != 200) {
             throw new CustomizeException("http execute failed.");
@@ -175,6 +179,5 @@ public class OpenAIService {
         gptSpeechTextRecodeService.saveSpeechToTextRecode(WebThreadLocal.getMember(), resultData.get("text").toString(), fileKey);
 
     }
-
 
 }
