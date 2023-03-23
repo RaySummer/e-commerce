@@ -344,7 +344,7 @@ public class HttpClientUtil {
                 return new HttpClientResponse(httpRequestBase.getRequestLine().getUri(), httpResponse.getStatusLine().getStatusCode(), headers, entityContent);
             }
         } catch (Exception ex) {
-            log.error("http execute failed.", ex);
+            log.error("http execute failed.:{}", ex.getMessage());
         }
         return new HttpClientResponse(httpRequestBase.getRequestLine().getUri(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null, "http execute failed.");
     }
