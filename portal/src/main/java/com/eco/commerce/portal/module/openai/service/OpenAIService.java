@@ -6,6 +6,7 @@ import com.eco.commerce.core.module.member.dto.MemberDto;
 import com.eco.commerce.core.utils.CustomizeException;
 import com.eco.commerce.core.utils.HttpClientResponse;
 import com.eco.commerce.core.utils.HttpClientUtil;
+import com.eco.commerce.core.utils.WebThreadLocal;
 import com.eco.commerce.portal.cache.CacheDataUtil;
 import com.eco.commerce.portal.module.openai.dto.ro.ChatGPTRO;
 import com.eco.commerce.portal.module.openai.dto.vo.ChatGPTVO;
@@ -20,6 +21,7 @@ import com.theokanning.openai.service.OpenAiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,9 @@ public class OpenAIService {
 
     @Autowired
     private ChatGPTRecodeService chatGPTRecodeService;
+
+    @Autowired
+    private GPTSpeechTextRecodeService gptSpeechTextRecodeService;
 
 
     @Transactional
@@ -143,7 +148,8 @@ public class OpenAIService {
         return OpenAIGenerateImageVO.builder().imageLink(imageLink).build();
     }
 
-    public OpenAISpeechToTextVO speechToText(File uploadFile) {
+    @Async
+    public void speechToText(File uploadFile, String fileKey) {
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + CacheDataUtil.openAIConfigVO.getApiKey());
@@ -159,7 +165,15 @@ public class OpenAIService {
             throw new CustomizeException("http execute failed.");
         }
         log.warn("http response is {}", httpClientResponse.getEntityContent());
-        return OpenAISpeechToTextVO.builder().text(httpClientResponse.getEntityContent()).build();
+
+        Map<String, Object> resultData = JSONObject.parseObject(JSON.toJSONString(JSON.parse(httpClientResponse.getEntityContent())), Map.class);
+        if (resultData == null) {
+            log.warn("result data is null");
+            throw new CustomizeException("http execute failed.");
+        }
+
+        gptSpeechTextRecodeService.saveSpeechToTextRecode(WebThreadLocal.getMember(), resultData.get("text").toString(), fileKey);
+
     }
 
 

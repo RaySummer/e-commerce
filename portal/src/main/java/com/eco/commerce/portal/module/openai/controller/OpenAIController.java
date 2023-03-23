@@ -111,6 +111,10 @@ public class OpenAIController {
             log.warn("file name is {}:", multipartFile.getOriginalFilename());
             log.warn("fileExt is {}:", fileExt);
 
+            if (!fileExt.matches("mp3") || !fileExt.matches("mp4") || !fileExt.matches("war")) {
+                return Response.ofError(500, "该功能暂时只支持MP3 MP4 WAR格式的音频文件");
+            }
+
             File fileFolder = new File(filePath);
 
             if (!fileFolder.exists()) {
@@ -124,7 +128,9 @@ public class OpenAIController {
 
             log.warn("upload success!! file name is {}:", newFileName);
 
-            return Response.of(openAIService.speechToText(fileSave));
+            openAIService.speechToText(fileSave, newFileName);
+
+            return Response.of(newFileName);
         } catch (Exception e) {
             return Response.ofError(500, e.getMessage());
         } finally {

@@ -11,6 +11,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -302,6 +303,8 @@ public class HttpClientUtil {
                 httpPost.setHeader(key, value);
             }
         }
+        RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(60000).setConnectTimeout(60000).setSocketTimeout(60000).build();
+        httpPost.setConfig(requestConfig);
         // 设置请求参数
         if (MapUtils.isNotEmpty(paramMap)) {
             // 使用 MultipartEntityBuilder 构造请求体
@@ -337,6 +340,7 @@ public class HttpClientUtil {
             HttpEntity httpEntity = httpResponse.getEntity();
             if (httpEntity != null) {
                 String entityContent = EntityUtils.toString(httpEntity, Consts.UTF_8);
+                log.warn("content is : {}", entityContent);
                 return new HttpClientResponse(httpRequestBase.getRequestLine().getUri(), httpResponse.getStatusLine().getStatusCode(), headers, entityContent);
             }
         } catch (Exception ex) {

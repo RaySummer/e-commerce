@@ -16,5 +16,8 @@ import java.io.Serializable;
 public class OpenAISpeechToTextVO implements Serializable {
     private static final long serialVersionUID = -5019174033219886876L;
 
-    private String text;
+    private String key;
+
+    private String content;
+
 }
