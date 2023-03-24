@@ -8,13 +8,17 @@ import com.eco.commerce.core.utils.LockHelper;
 import com.eco.commerce.core.utils.Response;
 import com.eco.commerce.core.utils.WebThreadLocal;
 import com.eco.commerce.portal.module.openai.dto.ro.ChatGPTRO;
+import com.eco.commerce.portal.module.openai.dto.vo.OpenAISpeechToTextVO;
 import com.eco.commerce.portal.module.openai.service.ChatGPTRecodeService;
+import com.eco.commerce.portal.module.openai.service.GPTSpeechTextRecodeService;
 import com.eco.commerce.portal.module.openai.service.OpenAIService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +48,9 @@ public class OpenAIController {
 
     @Autowired
     private ChatGPTRecodeService chatGPTRecodeService;
+
+    @Autowired
+    private GPTSpeechTextRecodeService gptSpeechTextRecodeService;
 
     @Value("${upload.file.path}")
     private String filePath;
@@ -128,12 +135,21 @@ public class OpenAIController {
 
             log.warn("upload success!! file name is {}:", newFileName);
 
-            openAIService.speechToText(fileSave, newFileName);
+            openAIService.speechToText(fileSave, newFileName, WebThreadLocal.getMember());
 
             return Response.of(newFileName);
         } catch (Exception e) {
             return Response.ofError(500, e.getMessage());
         }
+    }
+
+    @GetMapping("/speech-text/{key}")
+    public Response getSpeechText(@PathVariable String key) {
+        OpenAISpeechToTextVO speechToTextResult = gptSpeechTextRecodeService.getSpeechToTextResult(key);
+        if (speechToTextResult == null) {
+            return Response.ofError("Cannot found speech text by key");
+        }
+        return Response.of(speechToTextResult);
     }
 
 }

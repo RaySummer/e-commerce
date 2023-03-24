@@ -34,7 +34,9 @@ public class GPTSpeechTextRecodeService {
 
         GPTSpeechTextRecode recode = gptSpeechTextRecodeCoreService.findRecode(key, member.getId());
 
-        Assert.notNull(recode, "The key cannot find content, content is null");
+        if (recode == null) {
+            return null;
+        }
 
         return OpenAISpeechToTextVO.builder().content(recode.getContent()).key(recode.getKey()).build();
     }
@@ -42,7 +44,7 @@ public class GPTSpeechTextRecodeService {
     @Transactional
     public void saveSpeechToTextRecode(MemberDto memberDto, String content, String key) {
         Assert.notNull(memberDto, "Member is null");
-        Member member = memberCoreService.findByUid(WebThreadLocal.getMember().getUid());
+        Member member = memberCoreService.findByUid(memberDto.getUid());
         Assert.notNull(member, "Member is null");
 
         GPTSpeechTextRecode recode = new GPTSpeechTextRecode();

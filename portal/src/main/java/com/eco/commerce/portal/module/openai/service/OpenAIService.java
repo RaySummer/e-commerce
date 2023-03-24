@@ -153,7 +153,7 @@ public class OpenAIService {
     }
 
     @Async
-    public void speechToText(File uploadFile, String fileKey) {
+    public void speechToText(File uploadFile, String fileKey,MemberDto memberDto) {
 
         try {
             Map<String, String> headers = new HashMap<>();
@@ -177,7 +177,8 @@ public class OpenAIService {
                 throw new CustomizeException("http execute failed.");
             }
 
-            gptSpeechTextRecodeService.saveSpeechToTextRecode(WebThreadLocal.getMember(), resultData.get("text").toString(), fileKey);
+            gptSpeechTextRecodeService.saveSpeechToTextRecode(memberDto, resultData.get("text").toString(), fileKey);
+//            gptSpeechTextRecodeService.saveSpeechToTextRecode(memberDto, "213123123", fileKey);
         } catch (CustomizeException e) {
             e.printStackTrace();
         } finally {

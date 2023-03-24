@@ -55,6 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (request.getMethod().equalsIgnoreCase(RequestMethod.OPTIONS.name())) {
                 chain.doFilter(request, response);
             }
+            WebThreadLocal.init();
 
             // 设置浏览器指纹
             String browserFingerprint = request.getHeader(COOKIE_NAME_BROWSER_FINGERPRINT);
@@ -63,7 +64,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
 
             final String requestTokenHeader = request.getHeader(HEADER_TOKEN_NAME);
-            WebThreadLocal.init();
+
             String username = null;
             String jwtToken = null;
             // JWT Token is in the form "Bearer token". Remove Bearer word and get only the Token
@@ -120,8 +121,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            WebThreadLocal.remove();
         }
     }
 
