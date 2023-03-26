@@ -1,10 +1,12 @@
 package com.eco.commerce.portal.module.member.controller;
 
+import com.eco.commerce.core.annotation.NoRepeatSubmit;
 import com.eco.commerce.core.utils.Response;
 import com.eco.commerce.core.utils.WebThreadLocal;
 import com.eco.commerce.portal.module.member.dto.ro.MemberRO;
 import com.eco.commerce.portal.module.member.dto.ro.MemberRegisterRO;
 import com.eco.commerce.portal.module.member.service.MemberService;
+import com.eco.commerce.portal.module.member.service.MemberTaskRecodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,9 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private MemberTaskRecodeService memberTaskRecodeService;
 
     @PostMapping("/register")
     public Response register(@RequestBody MemberRegisterRO ro) {
@@ -37,7 +42,19 @@ public class MemberController {
     }
 
     @GetMapping("/member-info")
-    public Response getMemberInfo(){
+    public Response getMemberInfo() {
         return Response.of(WebThreadLocal.getMember());
+    }
+
+    @NoRepeatSubmit
+    @PostMapping("/complete-task/{taskUid}")
+    public Response completeTask(@PathVariable String taskUid) {
+        try {
+            memberTaskRecodeService.completeTask(WebThreadLocal.getMember().getUidStr(), taskUid);
+            return Response.of();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.ofError(500, e.getMessage());
+        }
     }
 }

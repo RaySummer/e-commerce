@@ -72,4 +72,8 @@ public class MemberService {
         return member;
     }
 
+    public Member findByUid(String uid) {
+        return memberCoreService.findByUid(uid);
+    }
+
 }

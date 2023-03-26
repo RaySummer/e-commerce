@@ -14,10 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -97,7 +94,6 @@ public class DateUtil {
      *
      * @param value 日期
      * @return
-     *
      * @author huanghaiping
      */
     public static String dateToString(Date value) {
@@ -157,7 +153,6 @@ public class DateUtil {
     }
 
     /**
-     *
      * @param date 指定时间
      * @return 本地时间
      */
@@ -176,7 +171,7 @@ public class DateUtil {
      * begin离end还有多少毫秒
      *
      * @param begin 起始日期
-     * @param end 结束日期
+     * @param end   结束日期
      * @return 毫秒数
      */
     public static long betweenMillis(Date begin, Date end) {
@@ -272,9 +267,8 @@ public class DateUtil {
     }
 
     /**
-     *
      * @param date 指定日期
-     * @param sub 天数
+     * @param sub  天数
      * @return 指定日期增加指定天数
      */
     public static Date addDay(Date date, int sub) {
@@ -319,7 +313,7 @@ public class DateUtil {
     /**
      * 指定时区的时间转为系统默认时区的时间
      *
-     * @param date 时间格式符合 DATE_TIME
+     * @param date   时间格式符合 DATE_TIME
      * @param zoneId dateStr时间所在时区
      * @return 目标时区时间
      */
@@ -375,5 +369,32 @@ public class DateUtil {
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(Calendar.MILLISECOND, calendar.get(Calendar.MILLISECOND) - 1);
         return calendar.getTime();
+    }
+
+    /**
+     * 获取当天的开始时间
+     *
+     * @return
+     */
+    public static java.util.Date getDayBegin() {
+        Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    /**
+     * 获取当天的结束时间
+     *
+     * @return
+     */
+    public static java.util.Date getDayEnd() {
+        Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        return cal.getTime();
     }
 }
